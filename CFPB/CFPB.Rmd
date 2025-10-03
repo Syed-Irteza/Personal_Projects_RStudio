@@ -1,0 +1,490 @@
+---
+title: "Complaint"
+author: "Syed_Irteza"
+date: "2025-10-01"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r}
+# Load required libraries
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(tidyr)
+library(reshape2)
+library(ggthemes)
+library(tibble)
+library(stringr)
+
+# Set working directory or read from file path
+# setwd("your_directory_path_here")
+df <- read.csv("complaints.csv", stringsAsFactors = FALSE)
+
+# Set global theme and visual style
+theme_set(theme_minimal() +
+          theme(plot.title = element_text(face = "bold", size = 14, hjust = 0.5, margin = margin(b = 20)),
+                axis.title = element_text(face = "bold", size = 12),
+                axis.text = element_text(size = 10),
+                panel.grid.minor = element_blank()))
+
+# Display basic information
+cat("Dataset Shape:", dim(df), "\n")
+cat("\nFirst 5 rows:\n")
+print(head(df, 5))
+cat("\nColumns and Data Types:\n")
+str(df)
+cat("\nMissing Values:\n")
+print(sort(colSums(is.na(df)), decreasing = TRUE))
+
+analyze_cfpb_complaints <- function(df) {
+  cat("=", 60, "\n")
+  cat("CFPB CONSUMER COMPLAINTS ANALYSIS\n")
+  cat("=", 60, "\n")
+  
+  # Convert date columns
+  df$Date.received <- as.Date(df$Date.received)
+  df$Date.sent.to.company <- as.Date(df$Date.sent.to.company)
+  df$year <- year(df$Date.received)
+  df$month <- month(df$Date.received)
+  df$day_of_week <- weekdays(df$Date.received)
+  df$month_year <- format(df$Date.received, "%Y-%m")
+  
+  # 1. COMPLAINT VOLUME TRENDS
+  cat("\n1. COMPLAINT VOLUME TRENDS OVER TIME\n")
+  cat("-", 40, "\n")
+  
+  # Monthly trend
+  monthly_trend <- df %>%
+    group_by(month_year) %>%
+    summarise(count = n()) %>%
+    arrange(month_year)
+  
+  # Only show recent months to avoid overcrowding
+  if(nrow(monthly_trend) > 24) {
+    monthly_trend <- tail(monthly_trend, 24)
+  }
+  
+  print(
+    ggplot(monthly_trend, aes(x = month_year, y = count, group = 1)) +
+      geom_line(color = "blue", linewidth = 1) +
+      geom_point(color = "red", size = 2) +
+      labs(title = "Monthly Complaint Volume Trend",
+           x = "Time Period",
+           y = "Number of Complaints") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      scale_y_continuous(labels = comma) +
+      scale_x_discrete(breaks = monthly_trend$month_year[seq(1, nrow(monthly_trend), by = max(1, nrow(monthly_trend)%/%8))])
+  )
+  
+  # Daily pattern
+  day_order <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
+  daily_trend <- df %>%
+    group_by(day_of_week) %>%
+    summarise(count = n()) %>%
+    mutate(day_of_week = factor(day_of_week, levels = day_order)) %>%
+    arrange(day_of_week) %>%
+    filter(!is.na(day_of_week))
+  
+  print(
+    ggplot(daily_trend, aes(x = day_of_week, y = count)) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.7) +
+      geom_text(aes(label = comma(count)), vjust = -0.5, fontface = "bold", size = 3.5) +
+      labs(title = "Complaints by Day of Week",
+           x = "Day of Week",
+           y = "Number of Complaints") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.1)))
+  )
+  
+  # 2. PRODUCT CATEGORY ANALYSIS - TWO-LINE LABELS
+  cat("\n2. PRODUCT CATEGORY ANALYSIS\n")
+  cat("-", 40, "\n")
+  
+  product_counts <- df %>%
+    count(Product) %>%
+    arrange(desc(n)) %>%
+    head(10)
+  
+  # Create two-line labels for products
+  product_counts <- product_counts %>%
+    mutate(Product_wrapped = str_wrap(Product, width = 30))
+  
+  print(
+    ggplot(product_counts, aes(x = n, y = reorder(Product_wrapped, n))) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+      geom_text(aes(label = comma(n)), hjust = -0.1, fontface = "bold", size = 3.5) +
+      labs(title = "Top 10 Products by Complaint Volume",
+           x = "Number of Complaints",
+           y = "Product Category") +
+      scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.3))) +
+      theme(plot.margin = margin(r = 40, l = 15),
+            axis.text.y = element_text(size = 10, margin = margin(r = 10), lineheight = 0.9),
+            axis.title.y = element_text(margin = margin(r = 15)),
+            plot.background = element_rect(fill = "white", color = NA)) +
+      expand_limits(x = max(product_counts$n) * 1.3)
+  )
+  
+  cat("Top 5 Product Categories:\n")
+  for(i in 1:5) {
+    cat(i, ". ", product_counts$Product[i], ": ", comma(product_counts$n[i]), " complaints\n", sep = "")
+  }
+  
+  # 3. ISSUE ANALYSIS - TWO-LINE LABELS
+  cat("\n3. TOP COMPLAINT ISSUES\n")
+  cat("-", 40, "\n")
+  
+  issue_counts <- df %>%
+    count(Issue) %>%
+    arrange(desc(n)) %>%
+    head(15)
+  
+  # Create two-line labels for issues
+  issue_counts <- issue_counts %>%
+    mutate(Issue_wrapped = str_wrap(Issue, width = 35))
+  
+  print(
+    ggplot(issue_counts, aes(x = n, y = reorder(Issue_wrapped, n))) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+      geom_text(aes(label = comma(n)), hjust = -0.1, fontface = "bold", size = 3) +
+      labs(title = "Top 15 Complaint Issues",
+           x = "Number of Complaints",
+           y = "Issue Type") +
+      scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.3))) +
+      theme(plot.margin = margin(r = 40, l = 15),
+            axis.text.y = element_text(size = 9, margin = margin(r = 5), lineheight = 0.9),
+            plot.background = element_rect(fill = "white", color = NA)) +
+      expand_limits(x = max(issue_counts$n) * 1.3)
+  )
+  
+  # 4. COMPANY ANALYSIS
+  cat("\n4. COMPANY PERFORMANCE ANALYSIS\n")
+  cat("-", 40, "\n")
+  
+  company_counts <- df %>%
+    count(Company) %>%
+    arrange(desc(n)) %>%
+    head(10)
+  
+  print(
+    ggplot(company_counts, aes(x = n, y = reorder(Company, n))) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+      geom_text(aes(label = comma(n)), hjust = -0.1, fontface = "bold", size = 3) +
+      labs(title = "Top 10 Companies by Complaint Volume",
+           x = "Number of Complaints",
+           y = "Company Names") +
+      scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.3))) +
+      theme(plot.margin = margin(r = 40, l = 10),
+            axis.text.y = element_text(size = 9, margin = margin(r = 5)),
+            plot.background = element_rect(fill = "white", color = NA)) +
+      expand_limits(x = max(company_counts$n) * 1.3)
+  )
+  
+  # 5. GEOGRAPHICAL ANALYSIS
+  cat("\n5. GEOGRAPHICAL DISTRIBUTION\n")
+  cat("-", 40, "\n")
+  
+  state_counts <- df %>%
+    count(State) %>%
+    arrange(desc(n)) %>%
+    head(15) %>%
+    filter(!is.na(State) & State != "")
+  
+  print(
+    ggplot(state_counts, aes(x = n, y = reorder(State, n))) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+      geom_text(aes(label = comma(n)), hjust = -0.1, fontface = "bold", size = 3.5,
+                position = position_nudge(x = max(state_counts$n) * 0.01)) +
+      labs(title = "Top 15 States by Complaint Volume",
+           x = "Number of Complaints",
+           y = "State Abbreviations") +
+      scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.3))) +
+      theme(plot.margin = margin(r = 40, l = 10),
+            axis.text.y = element_text(size = 9, margin = margin(r = 5)),
+            plot.background = element_rect(fill = "white", color = NA)) +
+      expand_limits(x = max(state_counts$n) * 1.3)
+  )
+  
+  # 6. COMPANY RESPONSE ANALYSIS - FIXED LABEL FOR SMALL BAR
+  cat("\n6. COMPANY RESPONSE ANALYSIS\n")
+  cat("-", 40, "\n")
+  
+  response_counts <- df %>%
+    count(Company.response.to.consumer) %>%
+    mutate(percentage = n / sum(n) * 100)
+  
+  print(
+    ggplot(response_counts, aes(x = n, y = reorder(Company.response.to.consumer, n))) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+      geom_text(aes(label = paste0(comma(n), "\n(", sprintf("%.1f", percentage), "%)")), 
+                hjust = -0.1, fontface = "bold", size = 2.8, 
+                position = position_nudge(x = max(response_counts$n) * 0.05)) +  # Nudge all labels
+      labs(title = "Company Response Distribution",
+           x = "Number of Complaints",
+           y = "Response Type") +
+      scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.5))) +  # Increased expansion
+      theme(plot.margin = margin(r = 60, l = 10),  # Increased right margin
+            axis.text.y = element_text(size = 9, margin = margin(r = 5)),
+            plot.background = element_rect(fill = "white", color = NA)) +
+      expand_limits(x = max(response_counts$n) * 1.6)  # Increased expansion limit
+  )
+  
+  timely_rate <- prop.table(table(df$Timely.response.)) * 100
+  yes_rate <- ifelse("Yes" %in% names(timely_rate), timely_rate[["Yes"]], 0)
+  cat("Timely Response Rate:", sprintf("%.1f%%", yes_rate), "\n")
+  
+  # 7. SUBMISSION CHANNEL ANALYSIS
+  cat("\n7. COMPLAINT SUBMISSION CHANNELS\n")
+  cat("-", 40, "\n")
+  
+  submission_counts <- df %>%
+    count(Submitted.via) %>%
+    filter(!is.na(Submitted.via))
+  
+  print(
+    ggplot(submission_counts, aes(x = n, y = reorder(Submitted.via, n))) +
+      geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+      geom_text(aes(label = comma(n)), hjust = -0.1, fontface = "bold", size = 3.5,
+                position = position_nudge(x = max(submission_counts$n) * 0.02)) +
+      labs(title = "Complaint Submission Channels",
+           x = "Number of Complaints",
+           y = "Submission Method") +
+      scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.3))) +
+      theme(plot.margin = margin(r = 40, l = 10),
+            axis.text.y = element_text(size = 9, margin = margin(r = 5)),
+            plot.background = element_rect(fill = "white", color = NA)) +
+      expand_limits(x = max(submission_counts$n) * 1.3)
+  )
+  
+  # 8. RESPONSE TIME ANALYSIS
+  cat("\n8. RESPONSE TIME ANALYSIS\n")
+  cat("-", 40, "\n")
+  
+  if(all(!is.na(df$Date.sent.to.company)) & all(!is.na(df$Date.received))) {
+    df$response_days <- as.numeric(difftime(df$Date.sent.to.company, df$Date.received, units = "days"))
+    response_days_clean <- df %>% filter(response_days <= 100 & response_days >= 0)
+    
+    mean_days <- mean(df$response_days, na.rm = TRUE)
+    median_days <- median(df$response_days, na.rm = TRUE)
+    percentile_95 <- quantile(df$response_days, 0.95, na.rm = TRUE)
+    
+    cat("Average response time:", sprintf("%.1f days", mean_days), "\n")
+    cat("Median response time:", sprintf("%.1f days", median_days), "\n")
+    cat("95th percentile response time:", sprintf("%.1f days", percentile_95), "\n")
+    
+    print(
+      ggplot(response_days_clean, aes(x = response_days)) +
+        geom_histogram(bins = 30, fill = "blue", color = "black", alpha = 0.7) +
+        geom_vline(aes(xintercept = mean_days, color = "Mean"), 
+                   linetype = "dashed", linewidth = 1) +
+        geom_vline(aes(xintercept = median_days, color = "Median"), 
+                   linetype = "dashed", linewidth = 1) +
+        labs(title = "Distribution of Response Times",
+             x = "Response Time (Days)",
+             y = "Number of Complaints") +
+        scale_color_manual(name = "Statistics",
+                           values = c("Mean" = "red", "Median" = "green")) +
+        scale_y_continuous(labels = comma) +
+        theme(legend.position = "bottom",
+              plot.background = element_rect(fill = "white", color = NA))
+    )
+  } else {
+    cat("Insufficient date data for response time analysis\n")
+  }
+
+  # Load necessary libraries (assuming tidyverse is already loaded)
+  library(scales)
+  library(ggplot2) 
+  install.packages('pheatmap')
+  library(pheatmap)
+
+  # Load stringr library if not already loaded
+  library(stringr)
+  
+      # 9. PRODUCT-ISSUE HEATMAP - EXTREMELY ZOOMED OUT VERSION
+    cat("\n9. PRODUCT-ISSUE RELATIONSHIP\n")
+    cat("-", 40, "\n")
+    
+    # Get top products and issues
+    top_products <- df %>%
+      count(Product) %>%
+      arrange(desc(n)) %>%
+      head(6) %>%
+      pull(Product)
+    
+    top_issues <- df %>%
+      count(Issue) %>%
+      arrange(desc(n)) %>%
+      head(8) %>%
+      pull(Issue)
+    
+    # Filter data and create cross-tabulation
+    filtered_df <- df %>%
+      filter(Product %in% top_products & Issue %in% top_issues)
+    
+    cross_tab <- filtered_df %>%
+      count(Product, Issue) %>%
+      pivot_wider(names_from = Issue, values_from = n, values_fill = 0) %>%
+      column_to_rownames("Product") %>%
+      as.matrix()
+    
+    # Create compact two-line labels
+    create_compact_labels <- function(labels, max_chars_per_line = 18) {  # Even more compact
+      sapply(labels, function(label) {
+        if (nchar(label) > max_chars_per_line) {
+          # Simple split - first half and second half
+          words <- strsplit(label, " ")[[1]]
+          if (length(words) >= 2) {
+            # Split at the middle word
+            split_at <- ceiling(length(words) / 2)
+            line1 <- paste(words[1:split_at], collapse = " ")
+            line2 <- paste(words[(split_at + 1):length(words)], collapse = " ")
+            return(paste0(line1, "\n", line2))
+          } else {
+            # Single long word - split at half the characters
+            split_at <- ceiling(nchar(label) / 2)
+            return(paste0(substr(label, 1, split_at), "\n", substr(label, split_at + 1, nchar(label))))
+          }
+        }
+        return(label)
+      })
+    }
+    
+    # Apply compact formatting
+    rownames_wrapped <- create_compact_labels(rownames(cross_tab))
+    colnames_wrapped <- create_compact_labels(colnames(cross_tab))
+    
+    # Create heatmap with EXTREMELY ZOOMED OUT settings
+    pheatmap(
+      cross_tab,
+      display_numbers = TRUE,
+      number_format = "%.0f",
+      color = colorRampPalette(c("white", "blue"))(100),
+      border_color = "white",
+      cellwidth = 25,  # Much smaller cells
+      cellheight = 25, # Much smaller cells
+      main = "Heatmap: Product vs Issue Complaints",
+      fontsize = 8,    # Smaller main font
+      fontsize_row = 7, # Smaller row font
+      fontsize_col = 7, # Smaller column font
+      fontsize_number = 7, # Smaller number font
+      angle_col = 45,
+      cluster_rows = FALSE,
+      cluster_cols = FALSE,
+      legend = TRUE,
+      annotation_legend = TRUE,
+      show_rownames = TRUE,
+      show_colnames = TRUE,
+      labels_row = rownames_wrapped,
+      labels_col = colnames_wrapped
+    )
+    
+    # Define custom breaks and labels for the legend
+  breaks <- seq(0, max(cross_tab), length.out = 5)  # 0 to max in 5 steps
+  labels <- scales::comma(breaks)                   # formatted with commas
+  
+  pheatmap(
+    cross_tab,
+    display_numbers = TRUE,
+    number_format = "%.0f",
+    color = colorRampPalette(c("white", "blue"))(100),
+    border_color = "white",
+    cellwidth = 25,
+    cellheight = 25,
+    main = "Heatmap: Product vs Issue Complaints",
+    fontsize = 8,
+    fontsize_row = 7,
+    fontsize_col = 7,
+    fontsize_number = 7,
+    angle_col = 45,
+    cluster_rows = FALSE,
+    cluster_cols = FALSE,
+    legend = TRUE,
+    annotation_legend = TRUE,
+    show_rownames = TRUE,
+    show_colnames = TRUE,
+    labels_row = rownames_wrapped,
+    labels_col = colnames_wrapped,
+    legend_breaks = breaks,       # custom breaks
+    legend_labels = labels        # custom formatted labels
+  )
+
+
+  # 10. CONSUMER DISPUTE ANALYSIS
+  cat("\n10. CONSUMER DISPUTE RATES\n")
+  cat("-", 40, "\n")
+  
+  if("Consumer.disputed." %in% colnames(df)) {
+    dispute_table <- table(df$Consumer.disputed.)
+    dispute_rate <- prop.table(dispute_table) * 100
+    yes_rate <- ifelse("Yes" %in% names(dispute_rate), dispute_rate[["Yes"]], 0)
+    cat("Overall Consumer Dispute Rate:", sprintf("%.1f%%", yes_rate), "\n")
+    
+    top_companies <- df %>%
+      count(Company) %>%
+      arrange(desc(n)) %>%
+      head(6) %>%
+      pull(Company)
+    
+    dispute_by_company <- df %>%
+      filter(Company %in% top_companies) %>%
+      group_by(Company) %>%
+      summarise(dispute_rate = mean(Consumer.disputed. == "Yes", na.rm = TRUE) * 100) %>%
+      arrange(desc(dispute_rate))
+    
+    print(
+      ggplot(dispute_by_company, aes(x = dispute_rate, y = reorder(Company, dispute_rate))) +
+        geom_col(fill = "blue", color = "black", alpha = 0.7, width = 0.8) +
+        geom_text(aes(label = sprintf("%.1f%%", dispute_rate)), 
+                  hjust = -0.1, fontface = "bold", size = 3.5) +
+        labs(title = "Dispute Rate by Top Companies",
+             x = "Dispute Rate (%)",
+             y = "Company Names") +
+        scale_x_continuous(labels = function(x) paste0(x, "%"), 
+                         expand = expansion(mult = c(0, 0.2)),
+                         limits = c(0, max(dispute_by_company$dispute_rate) * 1.2)) +
+        theme(plot.margin = margin(r = 40, l = 10),
+              axis.text.y = element_text(size = 9, margin = margin(r = 5)),
+              plot.background = element_rect(fill = "white", color = NA))
+    )
+  } else {
+    cat("Consumer dispute data not available\n")
+  }
+  
+  return(df)
+}
+
+# Run the analysis
+analyzed_df <- analyze_cfpb_complaints(df)
+
+# Generate executive summary
+cat("\n", "=", 70, "\n")
+cat("EXECUTIVE SUMMARY & ACTIONABLE INSIGHTS\n")
+cat("=", 70, "\n")
+
+cat("\n KEY FINDINGS:\n")
+cat("• Credit reporting companies dominate complaint volumes\n")
+cat("• Top issues: Incorrect information, improper use of reports\n")
+cat("• California, Florida, and Texas have highest complaint volumes\n")
+cat("• Web submission is the primary complaint channel\n")
+
+cat("\n RECOMMENDATIONS FOR COMPANIES:\n")
+cat("1. ENHANCE DATA ACCURACY: Implement stronger verification processes for credit reporting\n")
+cat("2. IMPROVE RESPONSE TIMES: Focus on reducing resolution time for credit report issues\n")
+cat("3. PROACTIVE COMMUNICATION: Reach out to consumers before complaints escalate\n")
+cat("4. STATE-SPECIFIC STRATEGIES: Develop targeted approaches for high-complaint states\n")
+cat("5. DIGITAL EXPERIENCE: Optimize web-based complaint resolution processes\n")
+
+cat("\n MONITORING METRICS:\n")
+cat("• Monthly complaint trends by product category\n")
+cat("• Company response timeliness and quality\n")
+cat("• Consumer dispute rates by issue type\n")
+cat("• Geographical complaint distribution patterns\n")
+```
+
+
+
+
