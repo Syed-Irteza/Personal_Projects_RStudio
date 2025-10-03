@@ -13,10 +13,14 @@ The Monthly Complaint Volume Trend indicates that the volume was the highest on 
 
    
 2.	What are the top 10 products that dominate complaint volumes?
+   
 Code:
+
 <img width="279" height="206" alt="image" src="https://github.com/user-attachments/assets/37759f8b-56c0-45e1-81fe-434a96f6931e" />
+
  
 Output:
+
 <img width="279" height="184" alt="image" src="https://github.com/user-attachments/assets/b7ba72cd-1bd8-4bee-a716-73acbb9928c1" />
   
 Findings:
