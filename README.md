@@ -69,10 +69,13 @@ Output:
 Finding:
 The data suggests that ‘Closed with explanation’ companies have the highest response of 6,045,556 (55.4%), following that ‘Closed with non-monetary relief’ has the second highest response of 3,674,117 (33.7%), and finally ‘In progress’ has the third highest response of 941,037 (8.6%). 
 
+
 7.	Which one is the primary compliant channel?
+
 Code:
 <img width="282" height="180" alt="image" src="https://github.com/user-attachments/assets/bb4fc23e-fd6b-4bcc-978d-ce8affc44175" />
  
+
 Output:
 <img width="252" height="170" alt="image" src="https://github.com/user-attachments/assets/c572c153-ddaf-4648-9415-3eb4a19e9af4" />
 
