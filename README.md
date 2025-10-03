@@ -6,7 +6,7 @@ Code:
 
 Output:
 
-<img width="240" height="147" alt="image" src="https://github.com/user-attachments/assets/fe8b150c-21cd-4ec4-b37a-7f71625026be" />  /t
+<img width="240" height="147" alt="image" src="https://github.com/user-attachments/assets/fe8b150c-21cd-4ec4-b37a-7f71625026be" />  
 <img width="240" height="146" alt="image" src="https://github.com/user-attachments/assets/149df7dc-ae65-4a24-8b96-fa1c381d5c63" />
  
  
