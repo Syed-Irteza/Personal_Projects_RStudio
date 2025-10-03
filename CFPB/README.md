@@ -65,6 +65,7 @@ The primary concerns, as indicated by the diagram, were as follows: the first wa
 <img width="245" height="163" alt="image" src="https://github.com/user-attachments/assets/d3db8cfc-934a-4703-a705-f0d230146305" />
  
 **Findings:**
+Equifax, INC. had received the greatest number of complaints of 2,730,821, following that in second place was TRANSUNION INTERMEDIATE HOLDINGS, INC with 2,673,214 complaints and in third place was Experian Information Solutions Inc. with 2,481,817 complaints.
 
 5.	Which states have the highest volume of complaints?
    
