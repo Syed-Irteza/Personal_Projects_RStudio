@@ -46,12 +46,15 @@ Output:
 Findings:
 
 5.	Which states have the highest volume of complaints?
+   
 
 Code:
+
 <img width="269" height="189" alt="image" src="https://github.com/user-attachments/assets/695aea0e-3a19-48d6-b8ab-d85b13afe6bb" />
 	 
 
 Output:
+
 <img width="297" height="201" alt="image" src="https://github.com/user-attachments/assets/a7a2fc0d-2ad4-440b-a121-87101f665516" />
  
 
