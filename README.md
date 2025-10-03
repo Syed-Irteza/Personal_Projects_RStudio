@@ -47,11 +47,14 @@ Findings:
 The primary concerns, as indicated by the diagram, were as follows: the first was "Incorrect information on your report," the second was "Improper use of your report," the third was "Problem with a company's investigation into an existing problem," the fourth was "Problem with a credit reporting company's investigation into an existing problem," and the fifth was "Attempts to collect debt not owed."
 
 4.	What are the top companies to receive highest volume of complaint?
+   
 Code:
+
 <img width="234" height="151" alt="image" src="https://github.com/user-attachments/assets/e34d9766-8cba-47eb-a002-adf5903c2314" />
  
 
 Output:
+
 <img width="245" height="163" alt="image" src="https://github.com/user-attachments/assets/d3db8cfc-934a-4703-a705-f0d230146305" />
  
 Findings:
