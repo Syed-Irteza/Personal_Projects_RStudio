@@ -1,9 +1,12 @@
 1.	Which year and day of week had recorded the most number of complaints?
+   
 Code:
+
 <img width="281" height="244" alt="image" src="https://github.com/user-attachments/assets/d630045f-5a8e-44af-aa51-15226311fcf8" />
 
 Output:
-<img width="240" height="147" alt="image" src="https://github.com/user-attachments/assets/fe8b150c-21cd-4ec4-b37a-7f71625026be" />
+
+<img width="240" height="147" alt="image" src="https://github.com/user-attachments/assets/fe8b150c-21cd-4ec4-b37a-7f71625026be" />  /t
 <img width="240" height="146" alt="image" src="https://github.com/user-attachments/assets/149df7dc-ae65-4a24-8b96-fa1c381d5c63" />
  
  
