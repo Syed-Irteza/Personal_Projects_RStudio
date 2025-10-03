@@ -137,7 +137,9 @@ Output:
 
 
 Findings: 
-Based on the heatmap, relationship among ‘Credit reporting or other personal consumer reports’ product and ‘Incorrect information on your report’ complaint was recorded the highest which indicates that ‘Credit reporting or other personal consumer reports’ had received the highest 
+Based on the heatmap, relationship among ‘Credit reporting or other personal consumer reports’ product and ‘Incorrect information on your report’ complaint was recorded the highest which indicates that ‘Credit reporting or other personal consumer reports’ had received the highest.
+
+
 10.	What are the top three companies to have highest dispute rate?
 
 Code:
