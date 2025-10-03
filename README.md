@@ -152,6 +152,7 @@ Output:
  
 Findings:
 The data suggests that ‘BANK OF AMERICA, NATIONAL ASSOCIATION’ has the highest dispute rate of 8.9%, following that in second place is ‘WELLS FARGO & COMPANY’ with 7.7% dispute and ‘JPMORGAN CHASE & CO.’ was at third with a rate of 6.4%. 
+
 11.	What are the recommendations for the companies?
 
 •	ENHANCE DATA ACCURACY: Implement stronger verification processes for credit reporting.
