@@ -28,13 +28,17 @@ According to the diagram, the most frequently complained-about product is "Credi
 
 
 3.	What are the top issues?
+   
 Code:
+
 <img width="289" height="200" alt="image" src="https://github.com/user-attachments/assets/6094a8c1-8344-4cd6-b121-2d637269926d" />
  
 
 
 Output:
+
 <img width="289" height="199" alt="image" src="https://github.com/user-attachments/assets/413f12c1-2a0e-4eec-a527-51f7a8860a08" />
+
  
 Findings:
 The primary concerns, as indicated by the diagram, were as follows: the first was "Incorrect information on your report," the second was "Improper use of your report," the third was "Problem with a company's investigation into an existing problem," the fourth was "Problem with a credit reporting company's investigation into an existing problem," and the fifth was "Attempts to collect debt not owed."
