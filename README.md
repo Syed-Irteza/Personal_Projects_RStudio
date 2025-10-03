@@ -80,22 +80,30 @@ Output:
 Findings:
 The diagram outlines that ‘Web’ is the primary compliant channel with the highest volume of 10,305,538 complaints.
 
-8.	What is the average, median and 95th percentile response time of Complaints? 
+8.	What is the average, median and 95th percentile response time of Complaints?
+
 Code:
+
 <img width="271" height="220" alt="image" src="https://github.com/user-attachments/assets/7d486c21-139e-4b5a-8704-460a9116c121" />
  
 Output:
+
 <img width="266" height="161" alt="image" src="https://github.com/user-attachments/assets/e13d213f-0c46-4255-a77b-541445824007" />
+
 
 	 
 Findings:
 The average response time of complaints is 0.8 days, with a median of 0 days of response time. The 95th percentile response time was recorded of 3 days. 
 9.	Which product had received the highest complaint issue?	
+
 Code:
+
 <img width="264" height="271" alt="image" src="https://github.com/user-attachments/assets/a89fafae-bb92-49cd-8b5e-55bef76b40cb" />
+
 
 	 
 Output:
+
 <img width="264" height="180" alt="image" src="https://github.com/user-attachments/assets/2193e2fb-9b45-4116-bc27-48fc2ffba4b5" />
 
 
