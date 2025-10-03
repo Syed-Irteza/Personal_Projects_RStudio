@@ -165,7 +165,7 @@ The data suggests that ‘BANK OF AMERICA, NATIONAL ASSOCIATION’ has the highe
 
 	•	ENHANCE DATA ACCURACY: Implement stronger verification processes for credit reporting.
 
-	•	MPROVE RESPONSE TIMES: Focus on reducing resolution time for credit report issues.
+	•	IMPROVE RESPONSE TIMES: Focus on reducing resolution time for credit report issues.
 
 	•	PROACTIVE COMMUNICATION: Reach out to consumers before complaints escalate.
 
