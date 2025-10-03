@@ -94,6 +94,8 @@ Output:
 	 
 Findings:
 The average response time of complaints is 0.8 days, with a median of 0 days of response time. The 95th percentile response time was recorded of 3 days. 
+
+
 9.	Which product had received the highest complaint issue?	
 
 Code:
@@ -110,10 +112,13 @@ Output:
 Findings: 
 Based on the heatmap, relationship among ‘Credit reporting or other personal consumer reports’ product and ‘Incorrect information on your report’ complaint was recorded the highest which indicates that ‘Credit reporting or other personal consumer reports’ had received the highest 
 10.	What are the top three companies to have highest dispute rate?
+
 Code:
+
 <img width="269" height="273" alt="image" src="https://github.com/user-attachments/assets/68b35e27-024f-4f18-819b-b6beb9a12075" />
  
 Output:
+
 <img width="269" height="181" alt="image" src="https://github.com/user-attachments/assets/94fe1e34-7cec-47d5-beed-6f4b5cc0e7da" />
  
 Findings:
