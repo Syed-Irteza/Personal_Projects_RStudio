@@ -86,15 +86,18 @@ Code:
  
 Output:
 <img width="266" height="161" alt="image" src="https://github.com/user-attachments/assets/e13d213f-0c46-4255-a77b-541445824007" />
+
 	 
 Findings:
 The average response time of complaints is 0.8 days, with a median of 0 days of response time. The 95th percentile response time was recorded of 3 days. 
 9.	Which product had received the highest complaint issue?	
 Code:
 <img width="264" height="271" alt="image" src="https://github.com/user-attachments/assets/a89fafae-bb92-49cd-8b5e-55bef76b40cb" />
+
 	 
 Output:
 <img width="264" height="180" alt="image" src="https://github.com/user-attachments/assets/2193e2fb-9b45-4116-bc27-48fc2ffba4b5" />
+
 
 Findings: 
 Based on the heatmap, relationship among ‘Credit reporting or other personal consumer reports’ product and ‘Incorrect information on your report’ complaint was recorded the highest which indicates that ‘Credit reporting or other personal consumer reports’ had received the highest 
@@ -121,4 +124,3 @@ The data suggests that ‘BANK OF AMERICA, NATIONAL ASSOCIATION’ has the highe
 •	Consumer dispute rates by issue type.
 •	Geographical complaint distribution patterns.
 
-<img width="468" height="630" alt="image" src="https://github.com/user-attachments/assets/8fd8eb5c-6bdf-4df8-b356-6127084cc1fa" />
